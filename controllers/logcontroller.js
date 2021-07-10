@@ -23,7 +23,7 @@ router.post("/create", validateJWT, async (req, res) => {
         description,
         definition,
         result,
-        owner: id
+        owner_id: id
     }
     try {
         const newLog = await LogModel.create(logEntry);

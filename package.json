@@ -11,7 +11,7 @@
   "author": "Arianne Domka",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^2.0.8"
+    "nodemon": "^2.0.12"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
