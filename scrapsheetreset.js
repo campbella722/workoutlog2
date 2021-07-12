@@ -13,14 +13,17 @@ router.get('/practice', validateJWT, (req, res) => {
 Log Create
 ==========================
 */
-router.post("/", validateJWT, async (req, res) => {
-    const { description, definition, result } = req.body.log;
+router.post("/create", validateJWT, async (req, res) => {
+    const { title, date, entry, description, definition, result } = req.body.log;
     const { id } = req.user;
     const logEntry = {
+        title,
+        date,
+        entry,
         description,
         definition,
         result,
-        owner_id: id
+        owner: id
     }
     try {
         const newLog = await LogModel.create(logEntry);
@@ -46,26 +49,26 @@ router.get("/", async (req, res) => {
     
 });
 /*
-======================
-Get all Logs for User
-======================
+================
+Get all Logs
+================
 */
-// router.get("/", validateJWT, async (req, res) => {
-//     const { id } = req.user;
-//     try {
-//         const userLogs = await LogModel.findAll({
-//             where: {
-//                 owner: id
-//             }
-//         });
-//         res.status(200).json(userLogs);
-//     } catch (err) {
-//         res.status(500).json({ error: err });
-//     }
-// });
+router.get("/mine", validateJWT, async (req, res) => {
+    const { id } = req.user;
+    try {
+        const userLogs = await LogModel.findAll({
+            where: {
+                owner: id
+            }
+        });
+        res.status(200).json(userLogs);
+    } catch (err) {
+        res.status(500).json({ error: err });
+    }
+});
 /*
 =======================
-Get Logs by id
+Get Logs by Title
 =======================
 */
 router.get("/:id", async (req, res) => {
@@ -84,8 +87,8 @@ router.get("/:id", async (req, res) => {
 Update a Log
 =================
 */
-router.put("/:id", validateJWT, async (req, res) => {
-    const { description, definition, result } = req.body.log;
+router.put("/update/:entryId", validateJWT, async (req, res) => {
+    const { title, date, entry, description, definition, result } = req.body.log;
     const logId = req.params.entryId;
     const userId = req.user.id;
 
@@ -96,6 +99,9 @@ router.put("/:id", validateJWT, async (req, res) => {
         }
     };
     const updatedLog = {
+        title: title,
+        date: date,
+        entry: entry,
         description: description,
         definition: definition,
         result: result,
@@ -112,7 +118,7 @@ router.put("/:id", validateJWT, async (req, res) => {
 Delete a Log
 ==================
 */
-router.delete("/:id", validateJWT, async (req, res) => {
+router.delete("/delete/:id", validateJWT, async (req, res) => {
     const ownerId = req.user.id;
     const logId = req.params.id;
 
