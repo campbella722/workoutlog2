@@ -36,33 +36,33 @@ router.post("/", validateJWT, async (req, res) => {
 Get all Logs
 ================
 */
-router.get("/", async (req, res) => {
-    try {
-        const entries = await LogModel.findAll();
-        res.status(200).json(entries);
-    } catch (err) {
-        res.status(500).json({ error: err });
-    }
+// router.get("/", async (req, res) => {
+//     try {
+//         const entries = await LogModel.findAll();
+//         res.status(200).json(entries);
+//     } catch (err) {
+//         res.status(500).json({ error: err });
+//     }
     
-});
+// });
 /*
 ======================
 Get all Logs for User
 ======================
 */
-// router.get("/", validateJWT, async (req, res) => {
-//     const { id } = req.user;
-//     try {
-//         const userLogs = await LogModel.findAll({
-//             where: {
-//                 owner: id
-//             }
-//         });
-//         res.status(200).json(userLogs);
-//     } catch (err) {
-//         res.status(500).json({ error: err });
-//     }
-// });
+router.get("/", validateJWT, async (req, res) => {
+    const { id } = req.user;
+    try {
+        const userLogs = await LogModel.findAll({
+            where: {
+                owner_id: id
+            }
+        });
+        res.status(200).json(userLogs);
+    } catch (err) {
+        res.status(500).json({ error: err });
+    }
+});
 /*
 =======================
 Get Logs by id
@@ -86,13 +86,13 @@ Update a Log
 */
 router.put("/:id", validateJWT, async (req, res) => {
     const { description, definition, result } = req.body.log;
-    const logId = req.params.entryId;
+    const logId = req.params.id;
     const userId = req.user.id;
 
     const query = {
         where: {
             id: logId,
-            owner: userId
+            owner_id: userId
         }
     };
     const updatedLog = {
@@ -120,7 +120,7 @@ router.delete("/:id", validateJWT, async (req, res) => {
         const query = {
             where: {
                 id: logId,
-                owner: ownerId
+                owner_id: ownerId
             }
         };
 
